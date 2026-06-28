@@ -14,8 +14,18 @@ import threading
 import time
 from collections import defaultdict
 from datetime import datetime
+from pathlib import Path
 
 from flask import Flask, render_template, request, jsonify
+
+# Load .env file if it exists (local dev only)
+env_path = Path(__file__).parent / ".env"
+if env_path.exists():
+    for line in env_path.read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            key, val = line.split("=", 1)
+            os.environ.setdefault(key.strip(), val.strip())
 
 from models import db, Watch
 from checker import check_section, has_open_spot
@@ -32,7 +42,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
-TERM = os.environ.get("TERM", "2026 Fall")
+TERM = os.environ.get("COURSE_TERM", "2026 Fall")
 CHECK_INTERVAL = 30
 SMTP_EMAIL = os.environ.get("SMTP_EMAIL", "")
 SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
@@ -240,4 +250,4 @@ with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000, threaded=True)

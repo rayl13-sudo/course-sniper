@@ -35,7 +35,7 @@ Go enroll NOW → https://www.reg.uci.edu/cgi-bin/webreg2/Main
 """
 
     msg = MIMEMultipart()
-    msg["From"] = sender_email
+    msg["From"] = f"Course Sniper <{sender_email}>"
     msg["To"] = recipient_email
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain"))
