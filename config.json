@@ -1,0 +1,12 @@
+{
+  "email": {
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 587,
+    "sender_email": "your-email@gmail.com",
+    "sender_password": "your-app-password",
+    "recipient_email": "your-email@gmail.com"
+  },
+  "term": "2026 Fall",
+  "check_interval_seconds": 30,
+  "courses": []
+}
