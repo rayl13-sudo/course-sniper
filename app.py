@@ -25,6 +25,7 @@ CONFIG_PATH = Path(__file__).parent / "config.json"
 monitor_thread = None
 monitor_running = False
 monitor_log = []  # Recent log entries
+alerts = []       # Sections that just opened — frontend polls and clears this
 MAX_LOG_ENTRIES = 50
 
 
@@ -82,24 +83,31 @@ def monitor_loop():
 
             if has_open_spot(info):
                 if code not in notified:
-                    add_log(f"OPEN: {label} — {info['enrolled']}/{info['max_capacity']} — sending email")
+                    add_log(f"OPEN: {label} — {info['enrolled']}/{info['max_capacity']}")
+                    notified.add(code)
+
+                    # Queue browser alert
+                    alerts.append({
+                        "section_code": code,
+                        "label": f"{info['dept']} {info['course_number']} — {info['course_title']}",
+                        "enrolled": info["enrolled"],
+                        "max_capacity": info["max_capacity"],
+                    })
+
+                    # Send email if configured
                     if email_cfg.get("sender_email") and email_cfg.get("sender_password"):
                         success = send_email(
                             email_cfg["smtp_server"],
                             email_cfg["smtp_port"],
                             email_cfg["sender_email"],
                             email_cfg["sender_password"],
-                            email_cfg["recipient_email"],
+                            email_cfg.get("recipient_email") or email_cfg["sender_email"],
                             info,
                         )
                         if success:
-                            notified.add(code)
                             add_log(f"EMAIL: Notification sent for {label}")
                         else:
                             add_log(f"ERROR: Failed to send email for {label}")
-                    else:
-                        add_log(f"OPEN: {label} — email not configured, skipping notification")
-                        notified.add(code)
                 else:
                     add_log(f"OPEN: {label} — already notified")
             else:
@@ -135,7 +143,6 @@ def api_status():
     return jsonify({
         "config": {
             "term": config["term"],
-            "check_interval_seconds": config["check_interval_seconds"],
             "sender_email": config["email"].get("sender_email", ""),
             "recipient_email": config["email"].get("recipient_email", ""),
             "has_password": bool(config["email"].get("sender_password")),
@@ -191,9 +198,6 @@ def api_config():
 
     if "term" in data:
         config["term"] = data["term"]
-    if "check_interval_seconds" in data:
-        val = int(data["check_interval_seconds"])
-        config["check_interval_seconds"] = max(10, val)
     if "sender_email" in data:
         config["email"]["sender_email"] = data["sender_email"]
     if "sender_password" in data and data["sender_password"]:
@@ -203,6 +207,14 @@ def api_config():
 
     save_config(config)
     return jsonify({"ok": True, "message": "Config saved"})
+
+
+@app.route("/api/alerts")
+def api_alerts():
+    """Return and clear pending alerts for browser notifications."""
+    pending = list(alerts)
+    alerts.clear()
+    return jsonify({"alerts": pending})
 
 
 @app.route("/api/monitor/start", methods=["POST"])

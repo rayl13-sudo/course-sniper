@@ -48,7 +48,27 @@
             color: #8b949e;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .help-text {
+            color: #8b949e;
+            font-size: 0.85rem;
+            line-height: 1.5;
             margin-bottom: 1rem;
+        }
+
+        .help-text a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+
+        .help-text a:hover { text-decoration: underline; }
+
+        .field-hint {
+            font-size: 0.75rem;
+            color: #484f58;
+            margin-top: 0.2rem;
         }
 
         /* Add section */
@@ -227,6 +247,28 @@
         .log-box .log-warn { color: #d29922; }
         .log-box .log-error { color: #f85149; font-weight: bold; }
 
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+
+        .collapse-icon {
+            color: #484f58;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .collapsed {
+            display: none;
+        }
+
+        .collapsed.show {
+            display: block;
+        }
+
         .toast {
             position: fixed;
             bottom: 1.5rem;
@@ -266,8 +308,14 @@
         <!-- Add Section -->
         <div class="card">
             <h2>Add Section</h2>
+            <p class="help-text">
+                Enter the 5-digit section code from
+                <a href="https://www.reg.uci.edu/perl/WebSoc" target="_blank">UCI WebSOC</a>.
+                It's the number in the "Code" column next to each lecture/discussion.
+                Use "Quick Check" to preview before adding.
+            </p>
             <div class="add-row">
-                <input type="text" id="addCode" placeholder="5-digit section code (e.g. 34190)"
+                <input type="text" id="addCode" placeholder="e.g. 34190"
                        maxlength="5" pattern="\d{5}">
                 <button onclick="addSection()" class="btn-blue">Add to Watch List</button>
                 <button onclick="quickCheck()" class="btn-outline">Quick Check</button>
@@ -278,6 +326,7 @@
         <!-- Watched Sections -->
         <div class="card">
             <h2>Watch List</h2>
+            <p class="help-text">Sections you're monitoring. Green = open spot, red = full. When the monitor is running, you'll get an email the moment a red section turns green.</p>
             <ul class="sections-list" id="sectionsList">
                 <li class="empty-state">Loading...</li>
             </ul>
@@ -292,6 +341,7 @@
                     <button id="stopBtn" onclick="stopMonitor()" class="btn-danger btn-sm" disabled>Stop</button>
                 </div>
             </div>
+            <p class="help-text">Hit Start to begin checking your sections every 30 seconds. You'll get an email when a spot opens. Keep this page open or leave the terminal running.</p>
             <div class="monitor-status" id="monitorStatus">
                 <span style="color: #484f58;">Stopped</span>
             </div>
@@ -304,29 +354,48 @@
         <div class="card">
             <h2>Settings</h2>
             <div class="config-grid">
-                <div class="field">
-                    <label>Term</label>
-                    <input type="text" id="cfgTerm" placeholder="2026 Fall">
-                </div>
-                <div class="field">
-                    <label>Check Interval (seconds)</label>
-                    <input type="number" id="cfgInterval" min="10" placeholder="30">
-                </div>
-                <div class="field">
-                    <label>Sender Email (Gmail)</label>
-                    <input type="email" id="cfgSender" placeholder="you@gmail.com">
-                </div>
-                <div class="field">
-                    <label>App Password</label>
-                    <input type="password" id="cfgPassword" placeholder="Enter to change">
-                </div>
                 <div class="field full-width">
-                    <label>Notification Email</label>
-                    <input type="email" id="cfgRecipient" placeholder="notify@example.com">
+                    <label>Term (which quarter to search)</label>
+                    <input type="text" id="cfgTerm" placeholder="2026 Fall">
+                    <span class="field-hint">Format: "YYYY Quarter" — e.g. 2026 Fall, 2027 Winter, 2027 Spring</span>
                 </div>
             </div>
             <div class="config-actions">
                 <button onclick="saveConfig()">Save Settings</button>
+            </div>
+        </div>
+
+        <!-- Email (optional) -->
+        <div class="card">
+            <div class="collapsible-header" onclick="toggleEmail()">
+                <h2 style="margin-bottom: 0;">Email Notifications (Optional)</h2>
+                <span class="collapse-icon" id="emailToggleIcon">+</span>
+            </div>
+            <p class="help-text">
+                You'll already get browser notifications and a sound alert when a spot opens.
+                Set up email below if you also want alerts when this tab is closed.
+            </p>
+            <div id="emailSection" class="collapsed">
+                <p class="help-text" style="margin-top: 0.75rem;">
+                    You need a Gmail
+                    <a href="https://myaccount.google.com/apppasswords" target="_blank">App Password</a>:
+                    Google Account &rarr; Security &rarr; 2-Step Verification &rarr; App Passwords.
+                    This is a special password just for this app, not your regular Gmail login.
+                </p>
+                <div class="config-grid">
+                    <div class="field">
+                        <label>Your Gmail address</label>
+                        <input type="email" id="cfgEmail" placeholder="you@gmail.com">
+                    </div>
+                    <div class="field">
+                        <label>Gmail App Password</label>
+                        <input type="password" id="cfgPassword" placeholder="Enter to change">
+                        <span class="field-hint">16-character password from Google</span>
+                    </div>
+                </div>
+                <div class="config-actions">
+                    <button onclick="saveConfig()">Save Email Settings</button>
+                </div>
             </div>
         </div>
     </div>
@@ -335,7 +404,65 @@
 
     <script>
         let refreshTimer = null;
+        let alertTimer = null;
 
+        // --- Sound alert (generated tone, no external file needed) ---
+        function playAlertSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const notes = [660, 880, 660, 880, 1100];
+                notes.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.value = freq;
+                    osc.type = 'sine';
+                    gain.gain.value = 0.15;
+                    osc.start(ctx.currentTime + i * 0.15);
+                    osc.stop(ctx.currentTime + i * 0.15 + 0.12);
+                });
+            } catch (e) {}
+        }
+
+        // --- Browser notifications ---
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        function sendBrowserNotification(title, body) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const n = new Notification(title, {
+                    body: body,
+                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="80" font-size="80">🎯</text></svg>',
+                    requireInteraction: true,
+                });
+                n.onclick = () => {
+                    window.focus();
+                    n.close();
+                };
+            }
+        }
+
+        // --- Poll for alerts from monitor ---
+        async function checkAlerts() {
+            try {
+                const data = await api('/api/alerts');
+                if (data.alerts && data.alerts.length > 0) {
+                    data.alerts.forEach(a => {
+                        sendBrowserNotification(
+                            'SPOT OPEN!',
+                            `${a.label} — ${a.enrolled}/${a.max_capacity} enrolled. Go enroll NOW!`
+                        );
+                    });
+                    playAlertSound();
+                }
+            } catch (e) {}
+        }
+
+        // --- Utils ---
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -352,6 +479,14 @@
             return res.json();
         }
 
+        function toggleEmail() {
+            const sec = document.getElementById('emailSection');
+            const icon = document.getElementById('emailToggleIcon');
+            sec.classList.toggle('show');
+            icon.textContent = sec.classList.contains('show') ? '−' : '+';
+        }
+
+        // --- Main refresh ---
         async function refresh() {
             const data = await api('/api/status');
 
@@ -398,7 +533,7 @@
             const stopBtn = document.getElementById('stopBtn');
 
             if (data.monitor_running) {
-                monStatus.innerHTML = '<div class="pulse"></div> <span style="color: #3fb950;">Running</span>';
+                monStatus.innerHTML = '<div class="pulse"></div> <span style="color: #3fb950;">Running — checks every 30s, alerts via browser notification + sound</span>';
                 startBtn.disabled = true;
                 stopBtn.disabled = false;
             } else {
@@ -425,12 +560,14 @@
             // Config
             const c = data.config;
             document.getElementById('cfgTerm').value = c.term;
-            document.getElementById('cfgInterval').value = c.check_interval_seconds;
-            document.getElementById('cfgSender').value = c.sender_email;
-            document.getElementById('cfgRecipient').value = c.recipient_email;
-            document.getElementById('cfgPassword').placeholder = c.has_password ? '••••••••' : 'Not set';
+            const emailInput = document.getElementById('cfgEmail');
+            if (emailInput) {
+                emailInput.value = c.sender_email;
+                document.getElementById('cfgPassword').placeholder = c.has_password ? '••••••••' : 'Not set';
+            }
         }
 
+        // --- Actions ---
         async function addSection() {
             const code = document.getElementById('addCode').value.trim();
             const res = await api('/api/add', { method: 'POST', body: { section_code: code } });
@@ -478,18 +615,19 @@
         }
 
         async function saveConfig() {
-            const body = {
-                term: document.getElementById('cfgTerm').value,
-                check_interval_seconds: document.getElementById('cfgInterval').value,
-                sender_email: document.getElementById('cfgSender').value,
-                recipient_email: document.getElementById('cfgRecipient').value,
-            };
-            const pw = document.getElementById('cfgPassword').value;
-            if (pw) body.sender_password = pw;
+            const body = { term: document.getElementById('cfgTerm').value };
+
+            const emailInput = document.getElementById('cfgEmail');
+            if (emailInput && emailInput.value) {
+                body.sender_email = emailInput.value;
+                body.recipient_email = emailInput.value;
+            }
+            const pw = document.getElementById('cfgPassword');
+            if (pw && pw.value) body.sender_password = pw.value;
 
             const res = await api('/api/config', { method: 'POST', body });
             if (res.ok) {
-                document.getElementById('cfgPassword').value = '';
+                if (pw) pw.value = '';
                 showToast('Settings saved');
                 refresh();
             } else {
@@ -498,12 +636,14 @@
         }
 
         async function startMonitor() {
+            requestNotificationPermission();
             const res = await api('/api/monitor/start', { method: 'POST' });
             if (res.ok) {
                 showToast('Monitor started');
-                // Poll more frequently while running
                 clearInterval(refreshTimer);
+                clearInterval(alertTimer);
                 refreshTimer = setInterval(refresh, 5000);
+                alertTimer = setInterval(checkAlerts, 5000);
                 refresh();
             } else {
                 showToast(res.error, 'error');
@@ -515,6 +655,7 @@
             if (res.ok) {
                 showToast('Monitor stopped');
                 clearInterval(refreshTimer);
+                clearInterval(alertTimer);
                 refreshTimer = setInterval(refresh, 15000);
                 refresh();
             } else {
@@ -526,6 +667,9 @@
         document.getElementById('addCode').addEventListener('keydown', e => {
             if (e.key === 'Enter') addSection();
         });
+
+        // Ask for notification permission on first visit
+        requestNotificationPermission();
 
         // Initial load + auto-refresh
         refresh();
