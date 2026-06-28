@@ -7,7 +7,7 @@ services:
     envVars:
       - key: SECRET_KEY
         generateValue: true
-      - key: TERM
+      - key: COURSE_TERM
         value: "2026 Fall"
       - key: SMTP_EMAIL
         sync: false
