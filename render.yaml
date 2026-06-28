@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: course-sniper
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: TERM
+        value: "2026 Fall"
+      - key: SMTP_EMAIL
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.11.0"

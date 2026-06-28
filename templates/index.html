@@ -6,35 +6,29 @@
     <title>Course Sniper</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0f1117;
             color: #e1e4e8;
             min-height: 100vh;
         }
-
         .container {
             max-width: 900px;
             margin: 0 auto;
             padding: 2rem 1.5rem;
         }
-
         header {
             text-align: center;
             margin-bottom: 2rem;
         }
-
         header h1 {
             font-size: 2rem;
             margin-bottom: 0.25rem;
         }
-
         header p {
             color: #8b949e;
             font-size: 0.9rem;
         }
-
         .card {
             background: #161b22;
             border: 1px solid #30363d;
@@ -42,7 +36,6 @@
             padding: 1.5rem;
             margin-bottom: 1.25rem;
         }
-
         .card h2 {
             font-size: 1rem;
             color: #8b949e;
@@ -50,33 +43,39 @@
             letter-spacing: 0.05em;
             margin-bottom: 0.5rem;
         }
-
         .help-text {
             color: #8b949e;
             font-size: 0.85rem;
             line-height: 1.5;
             margin-bottom: 1rem;
         }
-
         .help-text a {
             color: #58a6ff;
             text-decoration: none;
         }
-
         .help-text a:hover { text-decoration: underline; }
-
         .field-hint {
             font-size: 0.75rem;
             color: #484f58;
             margin-top: 0.2rem;
         }
-
+        /* Email bar */
+        .email-bar {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .email-bar input { flex: 1; }
+        .email-bar .email-status {
+            font-size: 0.85rem;
+            color: #3fb950;
+            white-space: nowrap;
+        }
         /* Add section */
         .add-row {
             display: flex;
             gap: 0.5rem;
         }
-
         input, select {
             background: #0d1117;
             border: 1px solid #30363d;
@@ -86,17 +85,13 @@
             font-size: 0.9rem;
             outline: none;
         }
-
         input:focus {
             border-color: #58a6ff;
         }
-
         input::placeholder {
             color: #484f58;
         }
-
         .add-row input { flex: 1; }
-
         button {
             background: #238636;
             color: white;
@@ -108,31 +103,24 @@
             font-weight: 500;
             transition: background 0.15s;
         }
-
         button:hover { background: #2ea043; }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
-
         .btn-danger { background: #da3633; }
         .btn-danger:hover { background: #f85149; }
-
         .btn-blue { background: #1f6feb; }
         .btn-blue:hover { background: #388bfd; }
-
         .btn-outline {
             background: transparent;
             border: 1px solid #30363d;
             color: #8b949e;
         }
         .btn-outline:hover { border-color: #58a6ff; color: #58a6ff; }
-
         .btn-sm {
             padding: 0.3rem 0.7rem;
             font-size: 0.8rem;
         }
-
         /* Sections table */
         .sections-list { list-style: none; }
-
         .section-item {
             display: flex;
             align-items: center;
@@ -140,81 +128,49 @@
             padding: 0.75rem 0;
             border-bottom: 1px solid #21262d;
         }
-
         .section-item:last-child { border-bottom: none; }
-
         .section-info {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
-
         .status-dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
             flex-shrink: 0;
         }
-
         .status-dot.open { background: #3fb950; box-shadow: 0 0 6px #3fb95066; }
         .status-dot.full { background: #f85149; }
         .status-dot.error { background: #484f58; }
-
         .section-name {
             font-weight: 600;
             font-size: 0.95rem;
         }
-
         .section-detail {
             color: #8b949e;
             font-size: 0.85rem;
         }
-
         .empty-state {
             text-align: center;
             color: #484f58;
             padding: 2rem;
             font-size: 0.9rem;
         }
-
-        /* Config form */
-        .config-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-        }
-
-        .config-grid label {
-            font-size: 0.8rem;
-            color: #8b949e;
-            margin-bottom: 0.2rem;
-            display: block;
-        }
-
-        .config-grid .field { display: flex; flex-direction: column; }
-        .config-grid .full-width { grid-column: 1 / -1; }
-
-        .config-actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-
         /* Monitor */
         .monitor-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
-
         .monitor-status {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             font-size: 0.9rem;
+            margin-bottom: 0.75rem;
         }
-
         .pulse {
             width: 8px;
             height: 8px;
@@ -222,12 +178,10 @@
             background: #3fb950;
             animation: pulse 2s ease-in-out infinite;
         }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
-
         .log-box {
             background: #0d1117;
             border: 1px solid #21262d;
@@ -240,35 +194,11 @@
             line-height: 1.6;
             color: #8b949e;
         }
-
         .log-box .log-open { color: #3fb950; }
         .log-box .log-full { color: #f85149; }
         .log-box .log-email { color: #58a6ff; }
         .log-box .log-warn { color: #d29922; }
         .log-box .log-error { color: #f85149; font-weight: bold; }
-
-        .collapsible-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            margin-bottom: 0.5rem;
-        }
-
-        .collapse-icon {
-            color: #484f58;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .collapsed {
-            display: none;
-        }
-
-        .collapsed.show {
-            display: block;
-        }
-
         .toast {
             position: fixed;
             bottom: 1.5rem;
@@ -283,18 +213,15 @@
             transition: all 0.3s;
             z-index: 100;
         }
-
         .toast.show {
             opacity: 1;
             transform: translateY(0);
         }
-
         .toast.success { border-color: #238636; }
         .toast.error { border-color: #da3633; }
-
         @media (max-width: 600px) {
-            .config-grid { grid-template-columns: 1fr; }
             .add-row { flex-direction: column; }
+            .email-bar { flex-direction: column; }
         }
     </style>
 </head>
@@ -305,6 +232,17 @@
             <p>UCI enrollment monitor — get notified when spots open up</p>
         </header>
 
+        <!-- Your Email -->
+        <div class="card">
+            <h2>Your Email</h2>
+            <p class="help-text">We'll send notifications to this address when a spot opens. This is the only info we need from you.</p>
+            <div class="email-bar">
+                <input type="email" id="emailInput" placeholder="you@uci.edu">
+                <button onclick="setEmail()" class="btn-blue">Set</button>
+            </div>
+            <span class="field-hint">Your email is saved in your browser so you don't have to re-enter it.</span>
+        </div>
+
         <!-- Add Section -->
         <div class="card">
             <h2>Add Section</h2>
@@ -313,6 +251,7 @@
                 <a href="https://www.reg.uci.edu/perl/WebSoc" target="_blank">UCI WebSOC</a>.
                 It's the number in the "Code" column next to each lecture/discussion.
                 Use "Quick Check" to preview before adding.
+                Currently watching: <strong>{{ term }}</strong>
             </p>
             <div class="add-row">
                 <input type="text" id="addCode" placeholder="e.g. 34190"
@@ -323,12 +262,12 @@
             <div id="quickCheckResult" style="margin-top: 0.75rem; display: none;"></div>
         </div>
 
-        <!-- Watched Sections -->
+        <!-- Watch List -->
         <div class="card">
             <h2>Watch List</h2>
-            <p class="help-text">Sections you're monitoring. Green = open spot, red = full. When the monitor is running, you'll get an email the moment a red section turns green.</p>
+            <p class="help-text">Sections you're monitoring. Green = open spot, red = full. You'll get an email the moment a red section turns green.</p>
             <ul class="sections-list" id="sectionsList">
-                <li class="empty-state">Loading...</li>
+                <li class="empty-state">Set your email above to see your watch list.</li>
             </ul>
         </div>
 
@@ -336,66 +275,13 @@
         <div class="card">
             <div class="monitor-header">
                 <h2 style="margin-bottom: 0;">Monitor</h2>
-                <div>
-                    <button id="startBtn" onclick="startMonitor()" class="btn-blue btn-sm">Start</button>
-                    <button id="stopBtn" onclick="stopMonitor()" class="btn-danger btn-sm" disabled>Stop</button>
-                </div>
             </div>
-            <p class="help-text">Hit Start to begin checking your sections every 30 seconds. You'll get an email when a spot opens. Keep this page open or leave the terminal running.</p>
+            <p class="help-text">The server automatically checks all watched sections every 30 seconds and sends emails when spots open. No need to keep this page open.</p>
             <div class="monitor-status" id="monitorStatus">
-                <span style="color: #484f58;">Stopped</span>
+                <span style="color: #484f58;">Loading...</span>
             </div>
-            <div class="log-box" id="logBox" style="margin-top: 0.75rem;">
-                <div style="color: #484f58;">No log entries yet. Start the monitor to begin watching.</div>
-            </div>
-        </div>
-
-        <!-- Settings -->
-        <div class="card">
-            <h2>Settings</h2>
-            <div class="config-grid">
-                <div class="field full-width">
-                    <label>Term (which quarter to search)</label>
-                    <input type="text" id="cfgTerm" placeholder="2026 Fall">
-                    <span class="field-hint">Format: "YYYY Quarter" — e.g. 2026 Fall, 2027 Winter, 2027 Spring</span>
-                </div>
-            </div>
-            <div class="config-actions">
-                <button onclick="saveConfig()">Save Settings</button>
-            </div>
-        </div>
-
-        <!-- Email (optional) -->
-        <div class="card">
-            <div class="collapsible-header" onclick="toggleEmail()">
-                <h2 style="margin-bottom: 0;">Email Notifications (Optional)</h2>
-                <span class="collapse-icon" id="emailToggleIcon">+</span>
-            </div>
-            <p class="help-text">
-                You'll already get browser notifications and a sound alert when a spot opens.
-                Set up email below if you also want alerts when this tab is closed.
-            </p>
-            <div id="emailSection" class="collapsed">
-                <p class="help-text" style="margin-top: 0.75rem;">
-                    You need a Gmail
-                    <a href="https://myaccount.google.com/apppasswords" target="_blank">App Password</a>:
-                    Google Account &rarr; Security &rarr; 2-Step Verification &rarr; App Passwords.
-                    This is a special password just for this app, not your regular Gmail login.
-                </p>
-                <div class="config-grid">
-                    <div class="field">
-                        <label>Your Gmail address</label>
-                        <input type="email" id="cfgEmail" placeholder="you@gmail.com">
-                    </div>
-                    <div class="field">
-                        <label>Gmail App Password</label>
-                        <input type="password" id="cfgPassword" placeholder="Enter to change">
-                        <span class="field-hint">16-character password from Google</span>
-                    </div>
-                </div>
-                <div class="config-actions">
-                    <button onclick="saveConfig()">Save Email Settings</button>
-                </div>
+            <div class="log-box" id="logBox">
+                <div style="color: #484f58;">Loading log...</div>
             </div>
         </div>
     </div>
@@ -403,10 +289,9 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        let refreshTimer = null;
-        let alertTimer = null;
+        let currentEmail = '';
 
-        // --- Sound alert (generated tone, no external file needed) ---
+        // --- Sound alert ---
         function playAlertSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -439,27 +324,8 @@
                     icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="80" font-size="80">🎯</text></svg>',
                     requireInteraction: true,
                 });
-                n.onclick = () => {
-                    window.focus();
-                    n.close();
-                };
+                n.onclick = () => { window.focus(); n.close(); };
             }
-        }
-
-        // --- Poll for alerts from monitor ---
-        async function checkAlerts() {
-            try {
-                const data = await api('/api/alerts');
-                if (data.alerts && data.alerts.length > 0) {
-                    data.alerts.forEach(a => {
-                        sendBrowserNotification(
-                            'SPOT OPEN!',
-                            `${a.label} — ${a.enrolled}/${a.max_capacity} enrolled. Go enroll NOW!`
-                        );
-                    });
-                    playAlertSound();
-                }
-            } catch (e) {}
         }
 
         // --- Utils ---
@@ -467,7 +333,7 @@
             const t = document.getElementById('toast');
             t.textContent = msg;
             t.className = `toast show ${type}`;
-            setTimeout(() => t.className = 'toast', 2500);
+            setTimeout(() => t.className = 'toast', 3000);
         }
 
         async function api(path, opts = {}) {
@@ -479,112 +345,48 @@
             return res.json();
         }
 
-        function toggleEmail() {
-            const sec = document.getElementById('emailSection');
-            const icon = document.getElementById('emailToggleIcon');
-            sec.classList.toggle('show');
-            icon.textContent = sec.classList.contains('show') ? '−' : '+';
-        }
-
-        // --- Main refresh ---
-        async function refresh() {
-            const data = await api('/api/status');
-
-            // Sections
-            const list = document.getElementById('sectionsList');
-            if (data.sections.length === 0) {
-                list.innerHTML = '<li class="empty-state">No sections watched yet. Add a section code above.</li>';
-            } else {
-                list.innerHTML = data.sections.map(s => {
-                    if (s.error) {
-                        return `<li class="section-item">
-                            <div class="section-info">
-                                <div class="status-dot error"></div>
-                                <div>
-                                    <div class="section-name">${s.section_code}</div>
-                                    <div class="section-detail">Could not fetch info</div>
-                                </div>
-                            </div>
-                            <button class="btn-danger btn-sm" onclick="removeSection('${s.section_code}')">Remove</button>
-                        </li>`;
-                    }
-                    const dotClass = s.is_open ? 'open' : 'full';
-                    const statusText = s.is_open ? 'OPEN' : 'FULL';
-                    return `<li class="section-item">
-                        <div class="section-info">
-                            <div class="status-dot ${dotClass}"></div>
-                            <div>
-                                <div class="section-name">${s.dept} ${s.course_number} — ${s.course_title}</div>
-                                <div class="section-detail">
-                                    ${s.section_code} · ${s.section_type} · ${statusText} ·
-                                    ${s.enrolled}/${s.max_capacity} enrolled ·
-                                    ${s.instructors && s.instructors.length ? s.instructors.join(', ') : 'TBA'}
-                                </div>
-                            </div>
-                        </div>
-                        <button class="btn-danger btn-sm" onclick="removeSection('${s.section_code}')">Remove</button>
-                    </li>`;
-                }).join('');
+        // --- Email ---
+        function setEmail() {
+            const email = document.getElementById('emailInput').value.trim();
+            if (!email || !email.includes('@')) {
+                showToast('Enter a valid email address.', 'error');
+                return;
             }
-
-            // Monitor
-            const monStatus = document.getElementById('monitorStatus');
-            const startBtn = document.getElementById('startBtn');
-            const stopBtn = document.getElementById('stopBtn');
-
-            if (data.monitor_running) {
-                monStatus.innerHTML = '<div class="pulse"></div> <span style="color: #3fb950;">Running — checks every 30s, alerts via browser notification + sound</span>';
-                startBtn.disabled = true;
-                stopBtn.disabled = false;
-            } else {
-                monStatus.innerHTML = '<span style="color: #484f58;">Stopped</span>';
-                startBtn.disabled = false;
-                stopBtn.disabled = true;
-            }
-
-            // Log
-            const logBox = document.getElementById('logBox');
-            if (data.log.length > 0) {
-                logBox.innerHTML = data.log.map(line => {
-                    let cls = '';
-                    if (line.includes('OPEN')) cls = 'log-open';
-                    else if (line.includes('FULL')) cls = 'log-full';
-                    else if (line.includes('EMAIL')) cls = 'log-email';
-                    else if (line.includes('WARN')) cls = 'log-warn';
-                    else if (line.includes('ERROR')) cls = 'log-error';
-                    return `<div class="${cls}">${line}</div>`;
-                }).join('');
-                logBox.scrollTop = logBox.scrollHeight;
-            }
-
-            // Config
-            const c = data.config;
-            document.getElementById('cfgTerm').value = c.term;
-            const emailInput = document.getElementById('cfgEmail');
-            if (emailInput) {
-                emailInput.value = c.sender_email;
-                document.getElementById('cfgPassword').placeholder = c.has_password ? '••••••••' : 'Not set';
-            }
+            currentEmail = email;
+            localStorage.setItem('cs_email', email);
+            showToast('Email set! Now add sections to watch.');
+            requestNotificationPermission();
+            loadWatches();
         }
 
         // --- Actions ---
         async function addSection() {
+            if (!currentEmail) {
+                showToast('Set your email first.', 'error');
+                return;
+            }
             const code = document.getElementById('addCode').value.trim();
-            const res = await api('/api/add', { method: 'POST', body: { section_code: code } });
+            const res = await api('/api/watch', {
+                method: 'POST',
+                body: { email: currentEmail, section_code: code }
+            });
             if (res.ok) {
                 document.getElementById('addCode').value = '';
                 showToast(res.message);
-                refresh();
+                loadWatches();
             } else {
                 showToast(res.error, 'error');
             }
         }
 
         async function removeSection(code) {
-            const res = await api('/api/remove', { method: 'POST', body: { section_code: code } });
+            const res = await api('/api/unwatch', {
+                method: 'POST',
+                body: { email: currentEmail, section_code: code }
+            });
             if (res.ok) {
                 showToast(res.message);
-                refresh();
+                loadWatches();
             } else {
                 showToast(res.error, 'error');
             }
@@ -593,11 +395,9 @@
         async function quickCheck() {
             const code = document.getElementById('addCode').value.trim();
             if (!code) return;
-
             const box = document.getElementById('quickCheckResult');
             box.style.display = 'block';
             box.innerHTML = '<span style="color: #8b949e;">Checking...</span>';
-
             const res = await api(`/api/check/${code}`);
             if (res.ok) {
                 const s = res.section;
@@ -607,73 +407,115 @@
                     <span style="color: ${color}; font-weight: 600;">${status}</span> —
                     ${s.dept} ${s.course_number} (${s.course_title}) ·
                     ${s.enrolled}/${s.max_capacity} ·
-                    ${s.instructors.length ? s.instructors.join(', ') : 'TBA'}
+                    ${s.instructors && s.instructors.length ? s.instructors.join(', ') : 'TBA'}
                 `;
             } else {
                 box.innerHTML = `<span style="color: #f85149;">${res.error}</span>`;
             }
         }
 
-        async function saveConfig() {
-            const body = { term: document.getElementById('cfgTerm').value };
+        // --- Watch list ---
+        async function loadWatches() {
+            if (!currentEmail) return;
 
-            const emailInput = document.getElementById('cfgEmail');
-            if (emailInput && emailInput.value) {
-                body.sender_email = emailInput.value;
-                body.recipient_email = emailInput.value;
-            }
-            const pw = document.getElementById('cfgPassword');
-            if (pw && pw.value) body.sender_password = pw.value;
+            const list = document.getElementById('sectionsList');
+            list.innerHTML = '<li class="empty-state">Loading...</li>';
 
-            const res = await api('/api/config', { method: 'POST', body });
-            if (res.ok) {
-                if (pw) pw.value = '';
-                showToast('Settings saved');
-                refresh();
-            } else {
-                showToast(res.error || 'Failed to save', 'error');
+            const res = await api('/api/my-watches', {
+                method: 'POST',
+                body: { email: currentEmail }
+            });
+
+            if (!res.ok || res.sections.length === 0) {
+                list.innerHTML = '<li class="empty-state">No sections watched yet. Add a section code above.</li>';
+                return;
             }
+
+            list.innerHTML = res.sections.map(s => {
+                if (s.error) {
+                    return `<li class="section-item">
+                        <div class="section-info">
+                            <div class="status-dot error"></div>
+                            <div>
+                                <div class="section-name">${s.section_code}</div>
+                                <div class="section-detail">Could not fetch info</div>
+                            </div>
+                        </div>
+                        <button class="btn-danger btn-sm" onclick="removeSection('${s.section_code}')">Remove</button>
+                    </li>`;
+                }
+                const dotClass = s.is_open ? 'open' : 'full';
+                const statusText = s.is_open ? 'OPEN' : (s.notified ? 'NOTIFIED' : 'FULL');
+                return `<li class="section-item">
+                    <div class="section-info">
+                        <div class="status-dot ${dotClass}"></div>
+                        <div>
+                            <div class="section-name">${s.dept} ${s.course_number} — ${s.course_title}</div>
+                            <div class="section-detail">
+                                ${s.section_code} · ${s.section_type || ''} · ${statusText} ·
+                                ${s.enrolled}/${s.max_capacity} enrolled ·
+                                ${s.instructors && s.instructors.length ? s.instructors.join(', ') : 'TBA'}
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-danger btn-sm" onclick="removeSection('${s.section_code}')">Remove</button>
+                </li>`;
+            }).join('');
         }
 
-        async function startMonitor() {
-            requestNotificationPermission();
-            const res = await api('/api/monitor/start', { method: 'POST' });
-            if (res.ok) {
-                showToast('Monitor started');
-                clearInterval(refreshTimer);
-                clearInterval(alertTimer);
-                refreshTimer = setInterval(refresh, 5000);
-                alertTimer = setInterval(checkAlerts, 5000);
-                refresh();
-            } else {
-                showToast(res.error, 'error');
-            }
+        // --- Monitor log ---
+        async function refreshLog() {
+            try {
+                const res = await api('/api/log');
+                const monStatus = document.getElementById('monitorStatus');
+                const logBox = document.getElementById('logBox');
+
+                if (res.running) {
+                    monStatus.innerHTML = '<div class="pulse"></div> <span style="color: #3fb950;">Running — checking every 30 seconds</span>';
+                } else {
+                    monStatus.innerHTML = '<span style="color: #484f58;">Waiting for sections to watch</span>';
+                }
+
+                if (res.log && res.log.length > 0) {
+                    logBox.innerHTML = res.log.map(line => {
+                        let cls = '';
+                        if (line.includes('OPEN')) cls = 'log-open';
+                        else if (line.includes('FULL')) cls = 'log-full';
+                        else if (line.includes('EMAIL')) cls = 'log-email';
+                        else if (line.includes('WARN')) cls = 'log-warn';
+                        else if (line.includes('ERROR')) cls = 'log-error';
+                        return `<div class="${cls}">${line}</div>`;
+                    }).join('');
+                    logBox.scrollTop = logBox.scrollHeight;
+                } else {
+                    logBox.innerHTML = '<div style="color: #484f58;">No log entries yet. Add a section to start monitoring.</div>';
+                }
+            } catch (e) {}
         }
 
-        async function stopMonitor() {
-            const res = await api('/api/monitor/stop', { method: 'POST' });
-            if (res.ok) {
-                showToast('Monitor stopped');
-                clearInterval(refreshTimer);
-                clearInterval(alertTimer);
-                refreshTimer = setInterval(refresh, 15000);
-                refresh();
-            } else {
-                showToast(res.error, 'error');
-            }
-        }
-
-        // Enter key to add
+        // Enter key shortcuts
         document.getElementById('addCode').addEventListener('keydown', e => {
             if (e.key === 'Enter') addSection();
         });
+        document.getElementById('emailInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') setEmail();
+        });
 
-        // Ask for notification permission on first visit
+        // Load saved email
+        const saved = localStorage.getItem('cs_email');
+        if (saved) {
+            document.getElementById('emailInput').value = saved;
+            currentEmail = saved;
+            loadWatches();
+        }
+
+        // Notification permission
         requestNotificationPermission();
 
-        // Initial load + auto-refresh
-        refresh();
-        refreshTimer = setInterval(refresh, 15000);
+        // Auto-refresh
+        refreshLog();
+        setInterval(refreshLog, 10000);
+        setInterval(() => { if (currentEmail) loadWatches(); }, 30000);
     </script>
 </body>
 </html>

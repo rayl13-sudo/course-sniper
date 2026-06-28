@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Course Sniper</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1117;
+            color: #e1e4e8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .auth-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        .auth-card h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 0.25rem;
+        }
+        .auth-card .subtitle {
+            text-align: center;
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .field {
+            margin-bottom: 1rem;
+        }
+        .field label {
+            display: block;
+            font-size: 0.85rem;
+            color: #8b949e;
+            margin-bottom: 0.3rem;
+        }
+        .field input {
+            width: 100%;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #e1e4e8;
+            padding: 0.7rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .field input:focus { border-color: #58a6ff; }
+        button {
+            width: 100%;
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        button:hover { background: #2ea043; }
+        .error {
+            background: #da363322;
+            border: 1px solid #da3633;
+            color: #f85149;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+        .switch {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 0.85rem;
+            color: #8b949e;
+        }
+        .switch a { color: #58a6ff; text-decoration: none; }
+        .switch a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <h1>Course Sniper</h1>
+        <p class="subtitle">Log in to your account</p>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="field">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="you@uci.edu" required autofocus>
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Your password" required>
+            </div>
+            <button type="submit">Log In</button>
+        </form>
+
+        <div class="switch">
+            Don't have an account? <a href="/signup">Sign up</a>
+        </div>
+    </div>
+</body>
+</html>

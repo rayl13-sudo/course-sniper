@@ -217,5 +217,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Course Sniper - contains email credentials
+# Course Sniper
 config.json
+instance/
+*.db
