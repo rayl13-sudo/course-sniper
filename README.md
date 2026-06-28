@@ -1,6 +1,6 @@
 # Course Sniper
 
-A CLI tool that monitors UCI course sections for open spots and sends you an email notification the moment one becomes available.
+Monitors UCI course sections for open spots and emails you the moment one becomes available. Available as a web UI or CLI.
 
 ## Problem
 
@@ -19,26 +19,33 @@ Falls back to scraping WebSOC directly if the API is unavailable.
 
 ```bash
 pip install -r requirements.txt
-python main.py config
 ```
 
-During config, you'll set your term (e.g. `2026 Fall`) and email credentials. For Gmail, you need an [App Password](https://myaccount.google.com/apppasswords) (not your regular password).
+For Gmail notifications, you need an [App Password](https://myaccount.google.com/apppasswords) (not your regular password).
 
-## Usage
+## Web UI
 
 ```bash
+python app.py
+```
+
+Open [http://localhost:5000](http://localhost:5000) in your browser. From there you can add/remove sections, configure email settings, start/stop the monitor, and see live logs.
+
+## CLI
+
+```bash
+# Configure email and term
+python main.py config
+
 # Check a section's current status
 python main.py check 34190
 
-# Add sections to your watch list
+# Add/remove sections
 python main.py add 34190
-python main.py add 34191
+python main.py remove 34190
 
-# View your watch list with live status
+# View watch list with live status
 python main.py list
-
-# Remove a section
-python main.py remove 34191
 
 # Start monitoring (runs until Ctrl+C)
 python main.py run
@@ -48,16 +55,18 @@ python main.py run
 
 ```
 course-sniper/
-├── main.py          # CLI interface and monitoring loop
-├── checker.py       # Anteater API + WebSOC scraper
-├── notifier.py      # Email notifications via SMTP
-├── config.json      # Your settings and watch list
-├── requirements.txt # Python dependencies
-└── REQUIREMENTS.md  # Software Requirements Specification
+├── app.py               # Flask web app
+├── templates/
+│   └── index.html       # Web UI (single page)
+├── main.py              # CLI interface
+├── checker.py           # Anteater API + WebSOC scraper
+├── notifier.py          # Email notifications via SMTP
+├── config.json          # Your settings and watch list
+├── requirements.txt     # Python dependencies
+└── REQUIREMENTS.md      # Software Requirements Specification
 ```
 
 ## Requirements
 
 - Python 3.10+
-- `requests` library
 - Gmail account with App Password (or any SMTP-compatible email)
