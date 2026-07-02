@@ -39,8 +39,26 @@ function ensureAlarm() {
   });
 }
 
-chrome.runtime.onInstalled.addListener(ensureAlarm);
-chrome.runtime.onStartup.addListener(ensureAlarm);
+async function initBadge() {
+  const { watches } = await getState();
+  updateBadge(watches);
+}
+
+chrome.runtime.onInstalled.addListener(() => {
+  ensureAlarm();
+  initBadge();
+});
+chrome.runtime.onStartup.addListener(() => {
+  ensureAlarm();
+  initBadge();
+});
+
+// Keep the badge in sync when the popup adds/removes a section.
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes.watches) {
+    updateBadge(changes.watches.newValue || []);
+  }
+});
 
 // --- the check loop ----------------------------------------------------------
 
@@ -75,6 +93,21 @@ async function runCheck() {
   }
 
   if (changed) await setWatches(watches);
+  updateBadge(watches);
+}
+
+// Red badge on the toolbar icon = how many watched sections are open right now.
+// This works regardless of OS notification settings.
+function updateBadge(watches) {
+  const openCount = watches.filter((w) => w.lastStatus === "open").length;
+  chrome.action.setBadgeBackgroundColor({ color: "#e74c3c" });
+  chrome.action.setBadgeTextColor?.({ color: "#ffffff" });
+  chrome.action.setBadgeText({ text: openCount ? String(openCount) : "" });
+  chrome.action.setTitle({
+    title: openCount
+      ? `Course Sniper — ${openCount} spot(s) open!`
+      : "Course Sniper",
+  });
 }
 
 function notifyOpen(info) {
