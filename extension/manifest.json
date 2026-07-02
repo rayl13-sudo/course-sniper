@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Course Sniper (UCI)",
+  "version": "1.0.0",
+  "description": "Watch UCI course sections and get a desktop notification the moment a spot opens up. No server, no login.",
+  "permissions": ["storage", "alarms", "notifications"],
+  "host_permissions": [
+    "https://anteaterapi.com/*",
+    "https://www.reg.uci.edu/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Course Sniper",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

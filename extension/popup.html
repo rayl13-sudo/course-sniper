@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Sniper</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: #191c22;
+      --line: #2a2e37;
+      --text: #e8eaed;
+      --muted: #9aa0aa;
+      --accent: #ffd200;   /* UCI gold */
+      --blue: #1c4e80;     /* UCI blue */
+      --open: #2ecc71;
+      --full: #e74c3c;
+      --unknown: #7f8896;
+    }
+    * { box-sizing: border-box; }
+    body {
+      width: 340px;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    header .logo { font-size: 18px; }
+    header h1 { font-size: 15px; margin: 0; font-weight: 600; }
+    header .term { margin-left: auto; font-size: 11px; color: var(--muted); }
+    .body { padding: 12px 16px 16px; }
+    .add-row { display: flex; gap: 8px; }
+    input[type="text"] {
+      flex: 1; padding: 9px 10px; border-radius: 8px;
+      border: 1px solid var(--line); background: var(--card); color: var(--text);
+      font-size: 14px; outline: none;
+    }
+    input[type="text"]:focus { border-color: var(--blue); }
+    button.add {
+      padding: 0 14px; border: none; border-radius: 8px;
+      background: var(--accent); color: #1a1a1a; font-weight: 700;
+      font-size: 14px; cursor: pointer;
+    }
+    button.add:hover { filter: brightness(1.05); }
+    .msg { min-height: 16px; font-size: 12px; margin: 8px 2px 0; }
+    .msg.err { color: var(--full); }
+    .msg.ok { color: var(--open); }
+    ul.watches { list-style: none; margin: 12px 0 0; padding: 0; }
+    ul.watches li {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 10px; padding: 9px 11px; margin-bottom: 8px;
+    }
+    .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+    .dot.open { background: var(--open); box-shadow: 0 0 6px var(--open); }
+    .dot.full { background: var(--full); }
+    .dot.unknown { background: var(--unknown); }
+    .info { flex: 1; min-width: 0; }
+    .info .code { font-size: 14px; font-weight: 600; }
+    .info .sub { font-size: 11px; color: var(--muted); margin-top: 1px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    button.rm {
+      border: none; background: transparent; color: var(--muted);
+      font-size: 16px; cursor: pointer; padding: 2px 4px;
+    }
+    button.rm:hover { color: var(--full); }
+    .empty { color: var(--muted); font-size: 13px; text-align: center; padding: 18px 0; }
+    footer {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);
+      font-size: 11px; color: var(--muted);
+    }
+    footer button {
+      background: transparent; border: 1px solid var(--line); color: var(--muted);
+      border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 11px;
+    }
+    footer button:hover { color: var(--text); border-color: var(--blue); }
+    footer .spacer { flex: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="logo">🎯</span>
+    <h1>Course Sniper</h1>
+    <span class="term" id="term">2026 Fall</span>
+  </header>
+  <div class="body">
+    <div class="add-row">
+      <input type="text" id="code" placeholder="5-digit section code" maxlength="5"
+             inputmode="numeric" autocomplete="off" />
+      <button class="add" id="addBtn">Add</button>
+    </div>
+    <div class="msg" id="msg"></div>
+    <ul class="watches" id="watches"></ul>
+    <div class="empty" id="empty">No sections yet. Add a code from WebSOC above.</div>
+    <footer>
+      <span>Checks every ~1 min while Chrome is open.</span>
+      <span class="spacer"></span>
+      <button id="refreshBtn">Refresh</button>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
